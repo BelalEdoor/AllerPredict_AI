@@ -124,7 +124,7 @@ Users type a question related to allergies, health, or food safety, and the app 
 - Text input box for user questions  
 - Sends question to backend API  
 - Displays AI-generated answer  
-- Clean and simple UI (React + TailwindCSS)  
+- Clean and simple UI (React + css)  
 
 --- 
 
@@ -137,20 +137,6 @@ Users type a question related to allergies, health, or food safety, and the app 
 
 ---
 
-## 🔌 API Example (Axios)
-
-```js
-import axios from "axios";
-
-export const ask = async (question) => {
-  const response = await axios.post("http://127.0.0.1:8000/ask", {
-    question: question
-  });
-  return response.data.answer;
-};
-```
-
----
 
 ## ▶️ Run the Frontend
 ```bash
