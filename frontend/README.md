@@ -11,7 +11,7 @@ Users type a question related to allergies, health, or food safety, and the app 
 - Displays AI-generated answer  
 - Clean and simple UI (React + TailwindCSS)  
 
----
+--- 
 
 ## 🧪 How It Works
 1. User enters a question in the input field  
