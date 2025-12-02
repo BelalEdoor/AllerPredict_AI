@@ -1,0 +1,222 @@
+[
+  {
+    "id": "0",
+    "name": "Oreo Cookies",
+    "category": "Snacks",
+    "brand": "Oreo",
+    "description": "Chocolate sandwich cookies with vanilla cream.",
+    "ingredients": "wheat flour, sugar, vegetable oil, cocoa, soy lecithin",
+    "allergen_warnings": "gluten, soy",
+    "ethical_notes": "Oreo is owned by Mondelez, a company flagged in several ethical reports for environmental concerns.",
+    "recommendations": "Biscoff Cookies, Tiffany Cookies"
+  },
+  {
+    "id": "1",
+    "name": "Pepsi",
+    "category": "Beverage",
+    "brand": "PepsiCo",
+    "description": "Carbonated cola drink.",
+    "ingredients": "carbonated water, high fructose corn syrup, caramel color, phosphoric acid",
+    "allergen_warnings": "",
+    "ethical_notes": "",
+    "recommendations": "Coca-Cola, RC Cola"
+  },
+  {
+    "id": "2",
+    "name": "Coca-Cola",
+    "category": "Beverage",
+    "brand": "Coca-Cola Company",
+    "description": "Classic carbonated cola.",
+    "ingredients": "carbonated water, sugar, caramel color",
+    "allergen_warnings": "",
+    "ethical_notes": "Often involved in controversies related to worker rights and water consumption.",
+    "recommendations": "Pepsi, Cola Gaza"
+  },
+  {
+    "id": "3",
+    "name": "Tropicana Orange Juice",
+    "category": "Juice",
+    "brand": "Tropicana",
+    "description": "100% orange juice.",
+    "ingredients": "orange juice",
+    "allergen_warnings": "citrus",
+    "ethical_notes": "Generally good reputation; criticized for plastic use.",
+    "recommendations": "Arwa Orange Juice, Cappy Orange"
+  },
+  {
+    "id": "4",
+    "name": "Doritos Nacho Cheese",
+    "category": "Snacks",
+    "brand": "Frito-Lay",
+    "description": "Cheese-flavored tortilla chips.",
+    "ingredients": "corn, vegetable oil, cheese powder, milk ingredients",
+    "allergen_warnings": "milk",
+    "ethical_notes": "Frito-Lay factories reported for poor labor conditions in some countries.",
+    "recommendations": "Pringles Cheese, Takis"
+  },
+  {
+    "id": "5",
+    "name": "Pringles Original",
+    "category": "Snacks",
+    "brand": "Pringles",
+    "description": "Crispy potato chips.",
+    "ingredients": "potatoes, vegetable oil, salt",
+    "allergen_warnings": "",
+    "ethical_notes": "Moderate ethical record; criticism about packaging waste.",
+    "recommendations": "Lay's Classic, Tiffany Chips"
+  },
+  {
+    "id": "6",
+    "name": "Snickers",
+    "category": "Chocolate",
+    "brand": "Mars",
+    "description": "Milk chocolate bar with peanuts and caramel.",
+    "ingredients": "milk chocolate, peanuts, sugar, soy lecithin",
+    "allergen_warnings": "milk, peanuts, soy",
+    "ethical_notes": "Mars has been criticized for child labor concerns in cocoa supply chains.",
+    "recommendations": "Twix, Galaxy Bar"
+  },
+  {
+    "id": "7",
+    "name": "Nutella",
+    "category": "Spread",
+    "brand": "Ferrero",
+    "description": "Hazelnut cocoa spread.",
+    "ingredients": "hazelnuts, sugar, milk powder, cocoa",
+    "allergen_warnings": "nuts, milk",
+    "ethical_notes": "Controversies over palm oil sourcing and environmental impact.",
+    "recommendations": "Ferrero Cocoa Spread, Al-Nassr Chocolate Spread"
+  },
+  {
+    "id": "8",
+    "name": "Almarai Yogurt",
+    "category": "Dairy",
+    "brand": "Almarai",
+    "description": "Plain yogurt.",
+    "ingredients": "milk, active cultures",
+    "allergen_warnings": "milk",
+    "ethical_notes": "Generally positive; no major global controversies.",
+    "recommendations": "Juhayna Yogurt, Nadec Yogurt"
+  },
+  {
+    "id": "9",
+    "name": "Nadec Milk",
+    "category": "Dairy",
+    "brand": "Nadec",
+    "description": "Fresh full-fat milk.",
+    "ingredients": "milk",
+    "allergen_warnings": "milk",
+    "ethical_notes": "Good overall reputation in ethical sourcing.",
+    "recommendations": "Almarai Milk, Juhayna Milk"
+  },
+  {
+    "id": "10",
+    "name": "Zain Mixed Nuts",
+    "category": "Snacks",
+    "brand": "Zain",
+    "description": "Roasted mixed nuts.",
+    "ingredients": "almonds, cashews, peanuts",
+    "allergen_warnings": "nuts, peanuts",
+    "ethical_notes": "Local Palestinian brand; good local ethical reputation.",
+    "recommendations": "Alreef Nuts, Abu Auf Nuts"
+  },
+  {
+    "id": "11",
+    "name": "Safi Olive Oil",
+    "category": "Oil",
+    "brand": "Safi",
+    "description": "Extra virgin Palestinian olive oil.",
+    "ingredients": "olive oil",
+    "allergen_warnings": "",
+    "ethical_notes": "Very positive; supports local farmers.",
+    "recommendations": "Canaan Olive Oil, Al-Ard Extra Virgin Oil"
+  },
+  {
+    "id": "12",
+    "name": "Canaan Tahini",
+    "category": "Tahini",
+    "brand": "Canaan",
+    "description": "Palestinian tahini made from sesame seeds.",
+    "ingredients": "sesame",
+    "allergen_warnings": "sesame",
+    "ethical_notes": "Highly ethical brand supporting fair trade practices.",
+    "recommendations": "Al-Arz Tahini, Libanese Tahini"
+  },
+  {
+    "id": "13",
+    "name": "Lipton Yellow Label Tea",
+    "category": "Tea",
+    "brand": "Lipton",
+    "description": "Black tea bags.",
+    "ingredients": "black tea",
+    "allergen_warnings": "",
+    "ethical_notes": "Unilever faced multiple ethical concerns but improving.",
+    "recommendations": "Ahmad Tea, Red Label Tea"
+  },
+  {
+    "id": "14",
+    "name": "Rice Basmati Al-Arz",
+    "category": "Grains",
+    "brand": "Al-Arz",
+    "description": "Premium long-grain basmati rice.",
+    "ingredients": "rice",
+    "allergen_warnings": "",
+    "ethical_notes": "Good local reputation, no major concerns.",
+    "recommendations": "India Gate Rice, Sella Basmati"
+  },
+  {
+    "id": "15",
+    "name": "White Sugar Al-Nassr",
+    "category": "Basic Food",
+    "brand": "Al-Nassr",
+    "description": "Refined white sugar.",
+    "ingredients": "sugar",
+    "allergen_warnings": "",
+    "ethical_notes": "Neutral ethical record.",
+    "recommendations": "Egyptian Sugar, Al-Waha Sugar"
+  },
+  {
+    "id": "16",
+    "name": "Salt Al-Waha",
+    "category": "Basic Food",
+    "brand": "Al-Waha",
+    "description": "Iodized salt.",
+    "ingredients": "salt, iodine",
+    "allergen_warnings": "",
+    "ethical_notes": "Neutral ethical record.",
+    "recommendations": "Sea Salt Local, Safi Salt"
+  },
+  {
+    "id": "17",
+    "name": "Al Reef Labaneh",
+    "category": "Dairy",
+    "brand": "Al Reef (Palestine)",
+    "description": "Traditional Palestinian strained yogurt.",
+    "ingredients": "milk",
+    "allergen_warnings": "milk",
+    "ethical_notes": "Strong ethical standing—supports local farmers.",
+    "recommendations": "Al-Juneidi Labaneh, Nadec Labaneh"
+  },
+  {
+    "id": "18",
+    "name": "Juneidi Cheese",
+    "category": "Dairy",
+    "brand": "Al-Juneidi",
+    "description": "White soft cheese.",
+    "ingredients": "milk, salt",
+    "allergen_warnings": "milk",
+    "ethical_notes": "Good local brand with sustainable manufacturing.",
+    "recommendations": "Nabulsi Cheese, Halloumi Cheese"
+  },
+  {
+    "id": "19",
+    "name": "Galaxy Smooth Milk",
+    "category": "Chocolate",
+    "brand": "Mars",
+    "description": "Smooth milk chocolate bar.",
+    "ingredients": "milk chocolate, sugar, milk, soy lecithin",
+    "allergen_warnings": "milk, soy",
+    "ethical_notes": "Mars faces criticism for cocoa supply chain issues.",
+    "recommendations": "Dairy Milk, Lindt Classic Milk"
+  }
+]

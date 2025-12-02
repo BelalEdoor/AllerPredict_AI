@@ -36,7 +36,7 @@ def query_chroma(meta, query_emb, model, top_k=2):
 #  Ask Ollama :
 def ask_ollama(context, question):
     prompt = f"""
-You are a food product assistant. Use ONLY the following context to answer:
+You are a food product assistant. Use ONLY the following context:
 
 ### CONTEXT ###
 {context}
@@ -44,8 +44,17 @@ You are a food product assistant. Use ONLY the following context to answer:
 ### QUESTION ###
 {question}
 
-Give a short, clear answer.
+Provide a short, clear answer in JSON format with the following keys:
+- detected_allergens: list of allergens present
+- risk_level: "low", "medium", or "high"
+- ethical_score: integer from 0 to 100
+- recommendations: list of alternative products
+
+Use only information from the context.
+"Provide your answer ONLY as a valid JSON with keys: detected_allergens, risk_level, ethical_score, recommendations. Do not include any extra text."
+
 """
+
 
     try:
         result = subprocess.run(
@@ -58,7 +67,6 @@ Give a short, clear answer.
     except Exception as e:
         return f"[ERROR calling Ollama] {e}"
 
-# Main :
 def main():
     question = input("Enter your question or product name: ")
 

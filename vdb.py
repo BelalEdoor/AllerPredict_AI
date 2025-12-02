@@ -4,7 +4,7 @@ from chromadb.utils import embedding_functions
 import chromadb
 import os
 
-DATA_PATH = "data.json"
+DATA_PATH = "./data/data.json"
 CHROMA_DIR = "chroma_db"
 META_PATH = "metadata.json"
 
