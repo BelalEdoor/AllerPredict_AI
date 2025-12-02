@@ -52,17 +52,6 @@ def get_ethical_score(product: dict) -> int:
         return 70
     return 50
 
-def extract_product_name(text: str) -> str:
-    """
-    Extract the product name from a natural language question.
-    Example: "What are the allergens in Pepsi?" -> "Pepsi"
-    """
-    text = text.lower()
-    # Remove common question words
-    text = re.sub(r"what are the allergens in|show me|tell me about|please|the|product", "", text)
-    # Remove punctuation
-    text = re.sub(r"[?.!]", "", text)
-    return text.strip()
 
 # ==== Endpoints ====
 @app.get("/products")
@@ -72,7 +61,7 @@ async def get_products():
 @app.post("/analyze_product", response_model=AnalysisOut)
 async def analyze_product(query: ProductQuery):
     # Extract product name from natural language
-    product_name = extract_product_name(query.product_name)
+    product_name = query.product_name
 
     # Partial match search for product
     product = next((p for p in PRODUCTS if product_name.lower() in p["name"].lower()), None)
