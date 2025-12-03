@@ -2,146 +2,179 @@ import json
 from sentence_transformers import SentenceTransformer
 import subprocess
 import os
+import numpy as np
 
+# تعطيل تحذيرات fork
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+# إعدادات
 EMB_MODEL = "all-MiniLM-L6-v2"
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 META_PATH = os.path.join(BASE_DIR, "data", "metadata.json")
+OLLAMA_MODEL = "mistral"
+TOP_K = 3
 
-OLLAMA_MODEL = "phi3"
-
-# Load resources + generate embeddings once
+# Load metadata + embeddings
 def load_resources():
     model = SentenceTransformer(EMB_MODEL)
 
     with open(META_PATH, "r", encoding="utf-8") as f:
         meta = json.load(f)
 
-    # Generate embeddings once
     for item in meta:
-        item["embedding"] = model.encode([item["description"]])[0].tolist()
+        # تحسين embedding ليشمل كل عناصر المنتج
+        full_text = (
+            f"Name: {item.get('name','')}. "
+            f"Category: {item.get('category','')}. "
+            f"Ingredients: {item.get('ingredients','')}. "
+            f"Allergens: {item.get('allergen_warnings','')}. "
+            f"Description: {item.get('description','')}. "
+            f"Ethics: {item.get('ethical_notes','')}"
+        )
+        item["embedding"] = model.encode([full_text])[0].tolist()
 
     return model, meta
 
-# Encode the query
+
+# Encode user query
 def encode_query(model, text):
     return model.encode([text])[0]
 
-# Query Chroma (top_k results)
-def query_chroma(meta, query_emb, model, top_k=2):
+
+# Cosine similarity
+def cosine_similarity(a, b):
+    a = np.array(a)
+    b = np.array(b)
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+
+# Retrieve top_k similar products
+def query_chroma(meta, query_emb, top_k=TOP_K):
     scored = []
     for item in meta:
-        doc_emb = item["embedding"]
-        score = sum(a*b for a,b in zip(query_emb, doc_emb))
+        score = cosine_similarity(query_emb, item["embedding"])
         scored.append((score, item))
-    
     scored.sort(reverse=True, key=lambda x: x[0])
     return scored[:top_k]
 
 
-# Ask Ollama
-def ask_ollama(context, question, meta):
-    product = next((item for item in meta if item["name"].lower() == question.lower()), None)
-
+# Find safe alternatives
+def get_safe_alternatives(meta, product, max_alternatives=5):
     if not product:
-        return json.dumps({
-            "detected_allergens": [],
-            "risk_level": "unknown",
-            "ethical_score": 0,
-            "recommendations": []
-        })
+        return []
 
+    main_allergens = set(a.strip().lower() for a in product.get("allergen_warnings", "").split(",") if a.strip())
+    main_category = product.get("category", "").lower()
+
+    alternatives = []
+    for item in meta:
+        if item["name"].lower() == product["name"].lower():
+            continue
+        if item.get("category", "").lower() != main_category:
+            continue
+
+        item_allergens = set(a.strip().lower() for a in item.get("allergen_warnings","").split(",") if a.strip())
+
+        if main_allergens & item_allergens:
+            continue
+
+        alternatives.append(item["name"])
+
+    return alternatives[:max_alternatives]
+
+
+# Ask Ollama
+def ask_ollama(context, question):
     prompt = f"""
-You are a food product assistant. Use ONLY the context below to answer.
+Analyze the following product:
 
-### CONTEXT ###
-{context}
+Your response MUST contain exactly TWO sections only.
+Do NOT repeat any information between the sections.
 
-### QUESTION ###
-{question}
+SECTION 1 (JSON):
+Return ONLY valid JSON with these exact fields:
+- detected_allergens: list
+- risk_level: string
+- ethical_score: integer
+- recommendations: string
 
-Respond ONLY with a STRICT valid JSON:
+SECTION 2 (REPORT):
+After the JSON, write a human-friendly product analysis report.
+Do NOT repeat details already present in the JSON.
+Focus on narrative explanation only.
+
+Use this exact separator between the two sections:
+
+Example output format:
+
 {{
-  "detected_allergens": [],
-  "risk_level": "",
-  "ethical_score": 0,
-  "recommendations":""
+  "detected_allergens": [...],
+  "risk_level": "...",
+  "ethical_score": ...,
+  "recommendations": "..."
 }}
-No explanation. No text outside JSON.
+
+Here starts the human-friendly report...
 """
 
-    try:
-        result = subprocess.run(
-            ["ollama", "run", OLLAMA_MODEL],
-            input=prompt.encode("utf-8"),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            timeout=120  # زيادة timeout
-        )
+    result = subprocess.run(
+        ["ollama", "run", OLLAMA_MODEL],
+        input=prompt,
+        text=True,
+        capture_output=True
+    )
+    
+    return result.stdout.strip()
 
-        raw = result.stdout.decode("utf-8").strip()
+# User-friendly report
+def format_report(product_name, detected_allergens, risk_level, ethical_score, alternatives, ollama_text):
+    report = f"==================== Product Analysis Report ====================\n"
+    report += f"Product Name       : {product_name}\n"
+    report += f"Detected Allergens : {', '.join(detected_allergens) if detected_allergens else 'None'}\n"
+    report += f"Risk Level         : {risk_level}\n"
+    report += f"Ethical Score      : {ethical_score} / 100\n"
+    report += "\n"
 
-        # استخراج JSON من الاستجابة
-        first = raw.find("{")
-        last = raw.rfind("}")
-        if first == -1 or last == -1:
-            data = {}
-        else:
-            try:
-                json_text = raw[first:last+1]
-                data = json.loads(json_text)
-            except:
-                data = {}
+    report += "Recommended Alternative Products:\n"
+    report += f"  {', '.join(alternatives) if alternatives else 'No safe alternatives available'}\n\n"
 
-        # detected_allergens
-        detected = data.get("detected_allergens", [])
-        if isinstance(detected, str):
-            detected = [a.strip() for a in detected.split(",") if a.strip()]
-        if not isinstance(detected, list):
-            detected = []
+    report += "AI Generated Notes:\n"
+    report += f"{ollama_text}\n"
+    report += "==================================================================\n"
+    return report
 
-        # risk_level
-        risk_level = data.get("risk_level", "unknown")
 
-        # ethical_score مع fallback
-        ethical = data.get("ethical_score", None)
-        if ethical is None:
-            ethical = 70 if product.get("ethical_notes") else 50
-        try:
-            ethical = int(ethical)
-        except:
-            ethical = 0
 
-        # recommendations دائمًا من metadata
-        rec_raw = product.get("recommendations", "")
-        if isinstance(rec_raw, str):
-            recommendations = [r.strip() for r in rec_raw.split(",") if r.strip()]
-        else:
-            recommendations = []
-
-        clean_json = {
-            "detected_allergens": detected,
-            "risk_level": risk_level,
-            "ethical_score": ethical,
-            "recommendations": recommendations
-        }
-
-        return json.dumps(clean_json, indent=2)
-
-    except Exception as e:
-        return json.dumps({
-            "detected_allergens": [],
-            "risk_level": "error",
-            "ethical_score": 0,
-            "recommendations": [f"ERROR: {e}"]
-        })
-
-# Optional: for local testing
+# MAIN
 if __name__ == "__main__":
-    question = input("Enter your question or product name: ")
+    question = input("Enter your product name: ").strip()
     model, meta = load_resources()
+
+    # Retrieve
     query_emb = encode_query(model, question)
-    results = query_chroma(meta, query_emb, model)
-    context = "\n\n".join([r[1]["description"] for r in results])
-    print("\n CONTEXT \n", context)
-    answer = ask_ollama(context, question, meta)
-    print("\n ANSWER \n", answer)
+    top_results = query_chroma(meta, query_emb)
+
+    # Build context شامل لكل الداتا
+    context = "\n\n".join([
+        f"Product: {p['name']}\n"
+        f"Category: {p['category']}\n"
+        f"Ingredients: {p['ingredients']}\n"
+        f"Allergens: {p['allergen_warnings']}\n"
+        f"Ethics: {p['ethical_notes']}\n"
+        f"Description: {p['description']}"
+        for _, p in top_results
+    ])
+
+    # Locate the exact product
+    product = next((i for i in meta if i["name"].lower() == question.lower()), None)
+
+    detected_allergens = [a.strip() for a in product.get("allergen_warnings","").split(",") if a.strip()] if product else []
+    risk_level = "low" if not detected_allergens else "medium"
+    ethical_score = 70 if product and product.get("ethical_notes") else 50
+    alternatives = get_safe_alternatives(meta, product)
+
+    ollama_text = ask_ollama(context, question)
+
+    
+    report_text = format_report(question, detected_allergens, risk_level, ethical_score, alternatives, ollama_text)
+    print("\nUSER-FRIENDLY REPORT\n", report_text)
